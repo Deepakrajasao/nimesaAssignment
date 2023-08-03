@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class apiReport {
 
     private static final String API_KEY = "b6907d289e10d714a6e88b30761fae22";
-    private static final String BASE_URL = "https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid="
+    private static final String BASE_URL = "https://samples.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid=b6907d289e10d714a6e88b30761fae22"
             + API_KEY;
 
     private static JSONObject getWeatherData(String url) throws IOException, JSONException {
@@ -36,18 +36,51 @@ public class apiReport {
     }
 
     private static double getTemperature(JSONObject weatherData, String date) throws JSONException {
+        JSONArray data = weatherData.getJSONArray("list");
 
-        return 25.0;
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject entry = data.getJSONObject(i);
+            String entryDate = entry.getString("dt_txt");
+
+            if (entryDate.equals(date)) {
+                JSONObject temperatureObj = entry.getJSONObject("main");
+                return temperatureObj.getDouble("temp");
+            }
+        }
+
+        return -1.0;
     }
 
     private static double getWindSpeed(JSONObject weatherData, String date) throws JSONException {
+        JSONArray data = weatherData.getJSONArray("list");
 
-        return 10.0;
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject entry = data.getJSONObject(i);
+            String entryDate = entry.getString("dt_txt");
+
+            if (entryDate.equals(date)) {
+                JSONObject windSpeedObj = entry.getJSONObject("wind");
+                return windSpeedObj.getDouble("speed");
+            }
+        }
+
+        return -1.0;
     }
 
     private static double getPressure(JSONObject weatherData, String date) throws JSONException {
+        JSONArray data = weatherData.getJSONArray("list");
 
-        return 1013.25;
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject entry = data.getJSONObject(i);
+            String entryDate = entry.getString("dt_txt");
+
+            if (entryDate.equals(date)) {
+                JSONObject pressureObj = entry.getJSONObject("main");
+                return pressureObj.getDouble("pressure");
+            }
+        }
+
+        return -1.0;
     }
 
     public static void main(String[] args) {
@@ -64,7 +97,7 @@ public class apiReport {
                 System.out.println("0. Exit");
 
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
